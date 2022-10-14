@@ -38,7 +38,8 @@ namespace LearningManagementSystemAPI.Entities
 
             modelBuilder.Entity<Course>(c =>
             {
-                c.Property(c => c.Name).IsRequired();
+                c.Property(c => c.Name).IsRequired().HasMaxLength(100);
+                c.Property(c => c.Description).IsRequired().HasMaxLength(250);
                 c.HasData(
                         new Course() { Id = 1, Name = "Mathematics", Description = "Test course", AuthorId="server" }
                 );
