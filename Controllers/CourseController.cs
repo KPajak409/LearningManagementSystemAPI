@@ -6,8 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LearningManagementSystemAPI.Controllers
 {
-    [ApiController]
+    
     [Route("api/course")]
+    //[ApiController] // check Modelstate for all request
     public class CourseController : ControllerBase
     {
         private readonly ICourseService _courseService;
@@ -31,43 +32,27 @@ namespace LearningManagementSystemAPI.Controllers
         public ActionResult<CourseDto> Get([FromRoute] int id)
         {
             var courseDto = _courseService.Get(id);
-
-            if (courseDto == null)
-                return NotFound();
-
             return Ok(courseDto);
         }
 
         [HttpPost]
         public ActionResult<CourseDto> CreateCourse([FromBody]CreateOrUpdateCourseDto courseDto)
         {
-            if(!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var id = _courseService.Create(courseDto);
-
             return Created($"/api/course/{id}", null);
         }
 
         [HttpDelete("{id}")]
         public ActionResult DeleteCourse([FromRoute] int id)
         {
-            var isDeleted = _courseService.Delete(id);
-            if (isDeleted)
-                return NoContent();
+            _courseService.Delete(id);
             return NotFound();
         }
 
         [HttpPatch("{id}")]
         public ActionResult UpdateCourse([FromBody] CreateOrUpdateCourseDto courseDto, [FromRoute] int id)
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
-
-            var isUpdated = _courseService.Update(courseDto, id);
-            if(!isUpdated)           
-                return NotFound();
-
+            _courseService.Update(courseDto, id);          
             return Ok();
         }
     }

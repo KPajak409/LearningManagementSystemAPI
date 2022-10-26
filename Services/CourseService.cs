@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using LearningManagementSystemAPI.Entities;
+using LearningManagementSystemAPI.Middleware;
 using LearningManagementSystemAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,8 +11,8 @@ namespace LearningManagementSystemAPI.Controllers
         IEnumerable<CourseDto> GetAll();
         CourseDto Get(int id);
         int Create(CreateOrUpdateCourseDto course);
-        bool Delete(int id);
-        bool Update(CreateOrUpdateCourseDto courseDto, int id);
+        void Delete(int id);
+        void Update(CreateOrUpdateCourseDto courseDto, int id);
     }
     public class CourseService : ICourseService
     {
@@ -56,29 +57,23 @@ namespace LearningManagementSystemAPI.Controllers
             return course.Id;
         }
 
-        public bool Delete(int id)
+        public void Delete(int id)
         {
             var course = GetById(id);
+
             _dbContext.Courses.Remove(course);
             _dbContext.SaveChanges();
-
-            if(course == null)
-                return false;
-            return true;
         }
 
-        public bool Update(CreateOrUpdateCourseDto courseDto ,int id)
+        public void Update(CreateOrUpdateCourseDto courseDto ,int id)
         {
             var course = GetById(id);
-            if (course == null)
-                return false;
 
             course.Name = courseDto.Name;
             course.Description = courseDto.Description;
             //course.PasswordHash = passwordHash ToDo passwordHash
 
             _dbContext.SaveChanges();
-            return true;
         }
 
         private Course GetById(int id)
@@ -90,7 +85,7 @@ namespace LearningManagementSystemAPI.Controllers
                  .FirstOrDefault(c => c.Id == id);
 
             if (course == null)
-                return null;
+                throw new NotFoundException("Course not found");
             return course;
         }
     }
