@@ -4,15 +4,15 @@ using LearningManagementSystemAPI.Middleware;
 using LearningManagementSystemAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace LearningManagementSystemAPI.Controllers
+namespace LearningManagementSystemAPI.Services
 {
     public interface ICourseService
     {
         IEnumerable<CourseDto> GetAll();
         CourseDto Get(int id);
-        int Create(CreateOrUpdateCourseDto course);
-        void Delete(int id);
+        int Create(CreateOrUpdateCourseDto courseDto);
         void Update(CreateOrUpdateCourseDto courseDto, int id);
+        void Delete(int id);
     }
     public class CourseService : ICourseService
     {
@@ -55,15 +55,7 @@ namespace LearningManagementSystemAPI.Controllers
             _dbContext.Courses.Add(course);
             _dbContext.SaveChanges();
             return course.Id;
-        }
-
-        public void Delete(int id)
-        {
-            var course = GetById(id);
-
-            _dbContext.Courses.Remove(course);
-            _dbContext.SaveChanges();
-        }
+        }    
 
         public void Update(CreateOrUpdateCourseDto courseDto ,int id)
         {
@@ -73,6 +65,14 @@ namespace LearningManagementSystemAPI.Controllers
             course.Description = courseDto.Description;
             //course.PasswordHash = passwordHash ToDo passwordHash
 
+            _dbContext.SaveChanges();
+        }
+
+        public void Delete(int id)
+        {
+            var course = GetById(id);
+
+            _dbContext.Courses.Remove(course);
             _dbContext.SaveChanges();
         }
 

@@ -1,18 +1,23 @@
 using LearningManagementSystemAPI.Controllers;
 using LearningManagementSystemAPI.Entities;
 using LearningManagementSystemAPI.Middleware;
+using LearningManagementSystemAPI.Services;
 using Microsoft.AspNetCore.Authentication.Certificate;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+    //.AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddDbContext<ApplicationDbContext>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<IActivityService, ActivityService>();
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
